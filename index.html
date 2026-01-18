@@ -1,0 +1,83 @@
+<!DOCTYPE html><html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>adzmspreadsheet</title>
+  <style>
+    body { font-family: Arial, sans-serif; background:#f4f4f4; padding:20px; }
+    h1 { text-align:center; }
+    .container { max-width:1000px; margin:auto; background:white; padding:20px; border-radius:12px; }
+    input, button { padding:10px; margin:5px 0; width:100%; }
+    .search { margin-bottom:15px; }
+    .grid { display:grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap:15px; margin-top:20px; }
+    .card { border:1px solid #ddd; border-radius:12px; overflow:hidden; cursor:pointer; transition:transform 0.2s, box-shadow 0.2s; background:white; }
+    .card:hover { transform:translateY(-4px); box-shadow:0 4px 15px rgba(0,0,0,0.15); }
+    .card img { width:100%; height:180px; object-fit:cover; }
+    .card-body { padding:10px; }
+    .name { font-weight:bold; margin-bottom:5px; }
+    .price { color:green; font-weight:bold; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1> adzmspreadsheet</h1><div class="search">
+  <input type="text" id="searchInput" placeholder=" Rechercher un article..." onkeyup="renderArticles()" />
+</div>
+
+<h3> Ajouter un article</h3>
+<input type="text" id="name" placeholder="Nom de l’article" />
+<input type="number" id="price" placeholder="Prix (€)" />
+<input type="text" id="image" placeholder="Lien de l’image" />
+<input type="text" id="link" placeholder="Lien Hipobuy" />
+<button onclick="addArticle()">Ajouter</button>
+
+<div class="grid" id="articleGrid"></div>
+
+  </div>  <script>
+    let articles = [];
+
+    function addArticle() {
+      const name = document.getElementById('name').value;
+      const price = document.getElementById('price').value;
+      const image = document.getElementById('image').value;
+      const link = document.getElementById('link').value;
+
+      if (!name || !price || !image || !link) {
+        alert('Remplis tous les champs');
+        return;
+      }
+
+      articles.push({ name, price: Number(price).toFixed(2), image, link });
+      renderArticles();
+
+      document.getElementById('name').value = '';
+      document.getElementById('price').value = '';
+      document.getElementById('image').value = '';
+      document.getElementById('link').value = '';
+    }
+
+    function renderArticles() {
+      const grid = document.getElementById('articleGrid');
+      const filter = document.getElementById('searchInput').value.toLowerCase();
+      grid.innerHTML = '';
+
+      articles
+        .filter(a => a.name.toLowerCase().includes(filter))
+        .forEach(article => {
+          const card = document.createElement('div');
+          card.className = 'card';
+          card.onclick = () => window.open(article.link, '_blank');
+
+          card.innerHTML = `
+            <img src="${article.image}" alt="${article.name}">
+            <div class="card-body">
+              <div class="name">${article.name}</div>
+              <div class="price">${article.price} €</div>
+            </div>
+          `;
+
+          grid.appendChild(card);
+        });
+    }
+  </script></body>
+</html>

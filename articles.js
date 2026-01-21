@@ -76,3 +76,17 @@ addArticle("Veste nike running division flash", 27, "https://cdn2.hipobuy.com/pr
 addArticle("Veste nike running DYE", 26, "https://cdn2.hipobuy.com/prod/order/D2601150274623072/checkPhotos/20260120/processed_c60f953c-c75d-438c-81c1-0d6a19ba9362_w.webp", "https://hipobuy.com/pages/goods/details?spuNo=7658577347&channel=weidian&inviteCode=E6EMQHWWA");
 addArticle("Bas running berlin", 19, "https://cdn2.hipobuy.com/prod/order/D2601171972704133/checkPhotos/20260120/processed_b9a7f084-183f-4797-971c-5647ede17118_w.webp", "https://hipobuy.com/pages/goods/details?spuNo=7646924376&channel=weidian&inviteCode=E6EMQHWWA");
 addArticle("Therma fit sans manche noire", 23, "https://cdn2.hipobuy.com/prod/order/D2601140441957586/checkPhotos/20260119/processed_b8bd5fec-6b96-40fc-843d-bea9d58a5bc9_w.webp", "https://hipobuy.com/pages/goods/details?id=7608669612&channel=WEIDIAN&inviteCode=E6EMQHWWA");
+products.forEach(product => {
+  const card = document.createElement("div");
+  card.classList.add("product-card");
+  card.innerHTML = `
+    <a href="${product.link}" target="_blank">
+      <img src="${product.img}" alt="${product.name}">
+      <div>
+        <p>${product.name}</p>
+        <p class="price">${product.price}</p>
+      </div>
+    </a>
+  `;
+  document.getElementById("products").appendChild(card);
+});

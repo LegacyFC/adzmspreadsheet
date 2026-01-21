@@ -1,5 +1,7 @@
-// ARTICLES.JS - Tous les articles anciens + nouveaux
-
+// 2️⃣ Fonction pour ajouter un produit
+function addArticle(name, price, img, link) {
+  products.push({ name, price: price + " €", img, link });
+}
 // ANCIENS ARTICLES
 addArticle("Pull Nike Tech", 16, "https://i.imgur.com/glqnO1W.jpeg", "https://hipobuy.com/pages/goods/details?id=987561116919&channel=1688&inviteCode=E6EMQHWWA");
 addArticle("T-shirt Running Nike", 5, "https://i.imgur.com/vUvVsy1.jpeg", "https://hipobuy.com/pages/goods/details?id=979095603924&channel=1688&inviteCode=E6EMQHWWA");

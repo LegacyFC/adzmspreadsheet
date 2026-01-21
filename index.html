@@ -3,167 +3,152 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ADZM Finds</title>
-<link href="https://fonts.googleapis.com/css2?family=Montserrat&family=Roboto+Mono&display=swap" rel="stylesheet">
+<title>Mes Articles</title>
 <style>
-  body {
-    margin: 0;
-    padding: 0;
-    font-family: 'Roboto Mono', monospace;
-    background: black;
-    color: white;
-    overflow-x: hidden;
-  }
+    /* Fond animé espace */
+    body {
+        margin: 0;
+        padding: 0;
+        font-family: Arial, sans-serif;
+        background: black;
+        overflow-x: hidden;
+        color: #fff;
+    }
 
-  canvas#stars {
-    position: fixed;
-    top:0; left:0;
-    width:100%;
-    height:100%;
-    z-index:0;
-  }
+    /* Particules étoiles style espace */
+    canvas {
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: -1;
+    }
 
-  .container {
-    max-width: 1000px;
-    margin: auto;
-    padding: 20px;
-    z-index: 1;
-    position: relative;
-  }
+    .container {
+        max-width: 1200px;
+        margin: auto;
+        padding: 20px;
+    }
 
-  .logo {
-    display: block;
-    max-width: 180px;
-    margin: 20px auto;
-  }
+    h1 {
+        text-align: center;
+        margin-bottom: 30px;
+        color: #fff;
+        text-shadow: 2px 2px 5px rgba(0,0,0,0.7);
+    }
 
-  .search {
-    display: flex;
-    justify-content: center;
-    margin-bottom: 20px;
-    z-index: 1;
-    position: relative;
-  }
+    .products {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 20px;
+    }
 
-  .search input {
-    width: 90%;
-    max-width: 500px;
-    padding: 10px 15px;
-    border-radius: 12px;
-    border: none;
-    font-size: 16px;
-    outline: none;
-    background: #111;
-    color: white;
-  }
+    .product {
+        background: rgba(0,0,0,0.4);
+        padding: 15px;
+        border-radius: 12px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        text-align: center;
+        transition: transform 0.2s;
+    }
 
-  .grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 15px;
-  }
+    .product:hover {
+        transform: scale(1.05);
+    }
 
-  .card {
-    position: relative;
-    background: #111;
-    border-radius: 12px;
-    overflow: hidden;
-    cursor: pointer;
-    transition: transform 0.2s, box-shadow 0.2s;
-  }
+    .product img {
+        width: 100%;
+        height: auto;
+        border-radius: 10px;
+        object-fit: contain;
+        margin-bottom: 10px;
+    }
 
-  .card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 4px 15px rgba(255,255,255,0.2);
-  }
+    .product a {
+        color: #ffd700;
+        text-decoration: none;
+    }
 
-  .card img {
-    width: 100%;
-    height: 150px;
-    object-fit: cover;
-    display: block;
-  }
+    .product a:hover {
+        text-decoration: underline;
+    }
 
-  .card-body {
-    padding: 6px 8px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  .card-body .text {
-    display: flex;
-    flex-direction: column;
-    padding: 4px 6px;
-    border-radius: 8px;
-    color: white;
-  }
-
-  .card-body .name {
-    font-weight: bold;
-    font-size: 14px;
-  }
-
-  .card-body .price {
-    color: #00ff7f;
-    font-weight: bold;
-    font-size: 13px;
-  }
-
-  .card-arrow {
-    position: absolute;
-    top: 6px;
-    right: 6px;
-    background: rgba(0,0,0,0.7);
-    padding: 2px 5px;
-    border-radius: 8px;
-    font-size: 12px;
-    color: white;
-  }
+    .price {
+        color: #00ff00; /* vert comme avant */
+        font-weight: bold;
+        margin: 5px 0;
+    }
 </style>
 </head>
 <body>
-<canvas id="stars"></canvas>
+<canvas id="spaceCanvas"></canvas>
 <div class="container">
-  <img src="https://i.imgur.com/wMhd6LV.jpeg" alt="Logo ADZM Finds" class="logo">
-
-  <div class="search">
-    <input type="text" id="searchInput" placeholder="🔍 Rechercher un article..." onkeyup="renderArticles()">
-  </div>
-
-  <div class="grid" id="products"></div>
+    <h1>Mes Articles</h1>
+    <div class="products" id="products">
+        <!-- Articles injectés ici par articles.js -->
+    </div>
 </div>
 
 <script src="articles.js"></script>
 <script>
-function renderArticles() {
-  const grid = document.getElementById('products');
-  const search = document.getElementById('searchInput').value.toLowerCase();
-  grid.innerHTML = '';
-
-  const filtered = articles.filter(a => a.name.toLowerCase().includes(search));
-  
-  filtered.forEach(article => {
-    const card = document.createElement('a');
-    card.href = article.link;
-    card.target = '_blank';
-    card.className = 'card';
-    card.innerHTML = `
-      <img src="${article.img}" alt="${article.name}">
-      <div class="card-body">
-        <div class="text">
-          <div class="name">${article.name}</div>
-          <div class="price">${article.price}€</div>
-        </div>
-        <div class="card-arrow">↗</div>
-      </div>
-    `;
-    grid.appendChild(card);
-  });
+// Générateur d'étoiles fond animé comme avant
+const canvas = document.getElementById('spaceCanvas');
+const ctx = canvas.getContext('2d');
+let stars = [];
+function initStars() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    stars = [];
+    for(let i=0; i<150; i++) {
+        stars.push({
+            x: Math.random()*canvas.width,
+            y: Math.random()*canvas.height,
+            r: Math.random()*1.5+0.5,
+            d: Math.random()*1
+        });
+    }
 }
+function drawStars() {
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    ctx.fillStyle = "white";
+    for(let i=0;i<stars.length;i++){
+        let s = stars[i];
+        ctx.beginPath();
+        ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
+        ctx.fill();
+    }
+}
+function updateStars(){
+    for(let i=0;i<stars.length;i++){
+        let s = stars[i];
+        s.y += s.d;
+        if(s.y>canvas.height){
+            s.y = 0;
+            s.x = Math.random()*canvas.width;
+        }
+    }
+}
+function animate() {
+    drawStars();
+    updateStars();
+    requestAnimationFrame(animate);
+}
+window.addEventListener('resize', initStars);
+initStars();
+animate();
 
-// Initial render
-renderArticles();
+// Fonction pour injecter les articles
+function addArticle(name, price, imageUrl, link){
+    const container = document.getElementById('products');
+    const div = document.createElement('div');
+    div.className = 'product';
+    div.innerHTML = `
+        <img src="${imageUrl}" alt="${name}">
+        <h3>${name}</h3>
+        <p class="price">${price}€</p>
+        <a href="${link}" target="_blank">Voir sur Hipobuy</a>
+    `;
+    container.appendChild(div);
+}
 </script>
 </body>
 </html>

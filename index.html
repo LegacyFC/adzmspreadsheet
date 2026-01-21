@@ -3,152 +3,138 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mes Articles</title>
+<title>ADZM Finds</title>
 <style>
-    /* Fond animé espace */
     body {
         margin: 0;
         padding: 0;
-        font-family: Arial, sans-serif;
+        font-family: monospace;
         background: black;
         overflow-x: hidden;
-        color: #fff;
+        color: white;
     }
 
-    /* Particules étoiles style espace */
-    canvas {
+    /* Fond animé */
+    #stars {
         position: fixed;
-        top: 0;
-        left: 0;
+        width: 100%;
+        height: 100%;
+        background: black;
         z-index: -1;
     }
+    .star {
+        position: absolute;
+        width: 2px;
+        height: 2px;
+        background: white;
+        border-radius: 50%;
+        animation: twinkle 2s infinite alternate;
+    }
+    @keyframes twinkle {
+        0% { opacity: 0.1; }
+        50% { opacity: 1; }
+        100% { opacity: 0.1; }
+    }
 
-    .container {
-        max-width: 1200px;
-        margin: auto;
+    header {
+        text-align: center;
         padding: 20px;
     }
 
-    h1 {
-        text-align: center;
-        margin-bottom: 30px;
-        color: #fff;
-        text-shadow: 2px 2px 5px rgba(0,0,0,0.7);
+    #searchBox {
+        display: block;
+        width: 90%;
+        max-width: 400px;
+        margin: 0 auto 30px;
+        padding: 10px;
+        font-size: 16px;
+        border-radius: 8px;
+        border: none;
     }
 
-    .products {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    #products {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
         gap: 20px;
+        padding: 0 10px;
     }
 
-    .product {
-        background: rgba(0,0,0,0.4);
-        padding: 15px;
-        border-radius: 12px;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-        text-align: center;
-        transition: transform 0.2s;
-    }
-
-    .product:hover {
-        transform: scale(1.05);
-    }
-
-    .product img {
-        width: 100%;
-        height: auto;
+    .product-card {
+        background: rgba(0,0,0,0.6);
         border-radius: 10px;
-        object-fit: contain;
-        margin-bottom: 10px;
+        overflow: hidden;
+        width: 160px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+        text-align: center;
+        font-size: 14px;
     }
 
-    .product a {
-        color: #ffd700;
-        text-decoration: none;
+    .product-card img {
+        width: 100%;
+        display: block;
     }
 
-    .product a:hover {
-        text-decoration: underline;
+    .product-name {
+        padding: 5px;
     }
 
-    .price {
-        color: #00ff00; /* vert comme avant */
+    .product-price {
+        padding: 5px;
+        color: #00ff00; /* prix en vert */
         font-weight: bold;
-        margin: 5px 0;
     }
 </style>
 </head>
 <body>
-<canvas id="spaceCanvas"></canvas>
-<div class="container">
-    <h1>Mes Articles</h1>
-    <div class="products" id="products">
-        <!-- Articles injectés ici par articles.js -->
-    </div>
-</div>
+<div id="stars"></div>
+
+<header>
+    <img src="logo.png" alt="ADZM FINDS" style="width:120px;">
+    <input type="text" id="searchBox" placeholder="🔍 Rechercher un article...">
+</header>
+
+<div id="products"></div>
 
 <script src="articles.js"></script>
 <script>
-// Générateur d'étoiles fond animé comme avant
-const canvas = document.getElementById('spaceCanvas');
-const ctx = canvas.getContext('2d');
-let stars = [];
-function initStars() {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-    stars = [];
-    for(let i=0; i<150; i++) {
-        stars.push({
-            x: Math.random()*canvas.width,
-            y: Math.random()*canvas.height,
-            r: Math.random()*1.5+0.5,
-            d: Math.random()*1
+    // animation étoiles aléatoire
+    const stars = document.getElementById('stars');
+    for (let i = 0; i < 100; i++) {
+        let star = document.createElement('div');
+        star.className = 'star';
+        star.style.top = Math.random() * 100 + '%';
+        star.style.left = Math.random() * 100 + '%';
+        star.style.width = Math.random()*2+1 + 'px';
+        star.style.height = star.style.width;
+        stars.appendChild(star);
+    }
+
+    // affichage articles
+    const productsDiv = document.getElementById('products');
+    function showProducts(list) {
+        productsDiv.innerHTML = '';
+        list.forEach(p => {
+            const card = document.createElement('div');
+            card.className = 'product-card';
+            card.innerHTML = `
+                <img src="${p.image}" alt="${p.name}">
+                <div class="product-name">${p.name}</div>
+                <div class="product-price">${p.price} €</div>
+            `;
+            card.onclick = () => window.open(p.link, "_blank");
+            productsDiv.appendChild(card);
         });
     }
-}
-function drawStars() {
-    ctx.clearRect(0,0,canvas.width,canvas.height);
-    ctx.fillStyle = "white";
-    for(let i=0;i<stars.length;i++){
-        let s = stars[i];
-        ctx.beginPath();
-        ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
-        ctx.fill();
-    }
-}
-function updateStars(){
-    for(let i=0;i<stars.length;i++){
-        let s = stars[i];
-        s.y += s.d;
-        if(s.y>canvas.height){
-            s.y = 0;
-            s.x = Math.random()*canvas.width;
-        }
-    }
-}
-function animate() {
-    drawStars();
-    updateStars();
-    requestAnimationFrame(animate);
-}
-window.addEventListener('resize', initStars);
-initStars();
-animate();
 
-// Fonction pour injecter les articles
-function addArticle(name, price, imageUrl, link){
-    const container = document.getElementById('products');
-    const div = document.createElement('div');
-    div.className = 'product';
-    div.innerHTML = `
-        <img src="${imageUrl}" alt="${name}">
-        <h3>${name}</h3>
-        <p class="price">${price}€</p>
-        <a href="${link}" target="_blank">Voir sur Hipobuy</a>
-    `;
-    container.appendChild(div);
-}
+    showProducts(articles);
+
+    // recherche
+    const searchBox = document.getElementById('searchBox');
+    searchBox.addEventListener('input', () => {
+        const filtered = articles.filter(a => a.name.toLowerCase().includes(searchBox.value.toLowerCase()));
+        showProducts(filtered);
+    });
 </script>
 </body>
 </html>
